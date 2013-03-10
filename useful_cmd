@@ -1,0 +1,50 @@
+# check job status
+qstat -u hliang -r -ne | less
+
+# Sum a single column in awk
+awk '{sum+=$1}END{print sum}' < listTopScores.txt
+
+# awk using multiple field separators
+awk -F "=| "    # 2 separators: space and =
+awk -F "[= ]"   # same
+BEGIN { FS="[/() \"]" } # 5 separaters: / ( ) space "
+
+
+
+MIRA
+How would one set a minimum read length of 80 and a base default quality of 10 for 454 reads, but for Solexa reads a minimum read length of 30 with a base default quality of 15? The answer:
+
+mira -job=denovo,genome,draft,454,solexa  -fasta
+  454_SETTINGS -AS:mrl=80:bdq=10 SOLEXA_SETTINGS -AS:mrl=30:bdq=15
+
+Notice the ..._SETTINGS section in the command line (or parameter file): these tell mira that all the following parameters until the advent of another switch are to be set specifically for the said technology.
+
+
+## tar pipe to ssh/scp
+tar zcvf - /wwwdata | ssh root@dumpserver.nixcraft.in "cat > /backup/wwwdata.tar.gz"
+# OR
+tar zcvf - /wwwdata | ssh root@192.168.1.201 "cat > /backup/wwwdata.tar.gz"
+# OR
+tar czf - /path/files-to-copy | ssh user@remotehost "cat > /path/data.tgz" 
+
+
+# You can restore tar backup over ssh session:
+ssh root@192.168.1.201 "cat /backup/wwwdata.tar.gz" | tar zxvf -
+
+# Equivalent to unix “less” command within R console
+# page() which displays a representation of an object in a pager, like less.
+dat <- data.frame(matrix(rnorm(1000), ncol = 10))
+page(dat, method = "print")
+
+# print 5 consecutive lines after a pattern in file using awk
+awk '/PATTERN/ {for(i=1; i<=5; i++) {getline; print}}' inputfile
+# or
+awk '{ if (lines > 0) { print; --lines; } } /PATTERN/ { lines = 5 }' inputfile
+
+# Count bases in a fasta file
+grep -v '>' file.fasta | wc -m
+
+# strip html/xml tags
+sed 's/<[^>]\+>//g'
+# or 
+sed 's/<[^<>]*>//g'
