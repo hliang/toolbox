@@ -1,3 +1,6 @@
+Collections of small and useful programs and scripts. Found on Internet or modified/created by me.
+
+==
 Create a new repository on the command line
 
 touch README.md
