@@ -1,3 +1,5 @@
+# used by hliang
+
 # check job status
 qstat -u hliang -r -ne | less
 
