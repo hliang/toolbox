@@ -46,6 +46,7 @@ import sys
 # Then print_words() and print_top() can just call the utility function.
 
 def read_count(filename):
+  "Returns a word/count dict for input file 'filename.'"
   words={}
   f = open(filename, 'r')
   for line in f:
@@ -58,6 +59,9 @@ def read_count(filename):
 
 
 def print_words(filename):
+  """function_docstring
+  in multiple
+  lines. """
   words = read_count(filename)
   for e in sorted(words.keys()):
     print e, words[e]
