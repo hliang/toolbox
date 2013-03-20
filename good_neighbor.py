@@ -1,6 +1,7 @@
 
 import os
 import sys
+import re
 
 #def read_snp():
 
@@ -49,10 +50,13 @@ def get_snps():
             # variant in CS (monomorphic)
             var_cs = snp_entry[7] 
             # variant in RWG1 (monomorphic allele which is different from CS allele, or polymorphic site which has both alleles). for the purpose of this program, assign only the unique allele.
-            var_rwg1 = snp_entry[2]
-            if var_rwg1 == var_cs:
-                var_rwg1 = snp_entry[3]
+            var_rwg1 = snp_entry[2] + snp_entry[3]
+            if var_rwg1[0] == snp_entry[11] or var_rwg1[1] == snp_entry[11]:
+                var_rwg1 = snp_entry[11]
+            #if var_rwg1 == var_cs:
+            #    var_rwg1 = snp_entry[3]
 
+            # store in dict
             if snp_entry[0] in snp_pos:
                 snp_pos[snp_entry[0]][int(snp_entry[1])] = [var_rwg1, var_cs]
             else:
@@ -65,7 +69,7 @@ def peek_at_neighbor(snp_pos, blast_hits):
     see if they have good alignment,
     and also see if the both alleles are present.
     """
-    dist = 20
+    dist = 10
     for query in snp_pos:
         print '============', query, '============'
         query_hits = {}
@@ -79,15 +83,32 @@ def peek_at_neighbor(snp_pos, blast_hits):
                     for this_hit in query_hits[subject]:
                         q_begin, q_end, s_begin, s_end = this_hit[2], this_hit[3], this_hit[4], this_hit[5] # start and end pos of query and subject in alignment
                         if pos >= q_begin and pos <= q_end:
-                            pos_in_aln = pos - q_begin
-                            # print this_hit
-                            print '\t'.join([str(q_begin), this_hit[-3] , str(q_end)])
-                            print '\t'.join([' '*len(str(q_begin)), this_hit[-1] , str(q_end)])
-                            print '\t'.join([str(s_begin), this_hit[-2] , str(s_end)])
+                            q_aln_seq_w_gap = this_hit[-3]
+                            pos_in_aln_wo_gap = 1
+                            pos_in_aln_w_gap = 1
+                            # print q_aln_seq_w_gap
+                            while pos_in_aln_wo_gap < pos - q_begin + 1:
+                                # print len(q_aln_seq_w_gap) pos_in_aln_w_gap, pos_in_aln_wo_gap
+                                if not q_aln_seq_w_gap[pos_in_aln_w_gap-1] == '-':
+                                    pos_in_aln_wo_gap = pos_in_aln_wo_gap + 1
+                                pos_in_aln_w_gap = pos_in_aln_w_gap + 1
+                                    
+                            # print alignment
+                            # print '=== hit on', subject, '==='
+                            # print '\t'.join([str(q_begin), this_hit[-3] , str(q_end)])
+                            # print '\t'.join([' '*len(str(q_begin)), this_hit[-1] , str(q_end)])
+                            # print '\t'.join([str(s_begin), this_hit[-2] , str(s_end)])
 
-                            print '# Q #', this_hit[-3][pos_in_aln-dist:pos_in_aln], this_hit[-3][pos_in_aln], this_hit[-3][pos_in_aln+1:pos_in_aln+dist+1]
-                            print '# | #', this_hit[-1][pos_in_aln-dist:pos_in_aln], this_hit[-1][pos_in_aln], this_hit[-1][pos_in_aln+1:pos_in_aln+dist+1]
-                            print '# S #', this_hit[-2][pos_in_aln-dist:pos_in_aln], this_hit[-2][pos_in_aln], this_hit[-2][pos_in_aln+1:pos_in_aln+dist+1]
+                            # q_aln_seq_wo_gap
+                            # q_aln_seq_wo_gap = re.sub('-', '', q_aln_seq_w_gap)
+                            # print '# Q #', q_aln_seq_wo_gap[pos_in_aln_wo_gap-1-dist:pos_in_aln_wo_gap-1], q_aln_seq_wo_gap[pos_in_aln_wo_gap-1], q_aln_seq_wo_gap[pos_in_aln_wo_gap:pos_in_aln_wo_gap+dist]
+
+                            # print '# Q #', this_hit[-3][pos_in_aln-dist:pos_in_aln], this_hit[-3][pos_in_aln], this_hit[-3][pos_in_aln+1:pos_in_aln+dist+1]
+                            # print '# | #', this_hit[-1][pos_in_aln-dist:pos_in_aln], this_hit[-1][pos_in_aln], this_hit[-1][pos_in_aln+1:pos_in_aln+dist+1]
+                            # print '# S #', this_hit[-2][pos_in_aln-dist:pos_in_aln], this_hit[-2][pos_in_aln], this_hit[-2][pos_in_aln+1:pos_in_aln+dist+1]
+                            print '# Q #', this_hit[-3][pos_in_aln_w_gap-1-dist:pos_in_aln_w_gap-1], this_hit[-3][pos_in_aln_w_gap-1], this_hit[-3][pos_in_aln_w_gap:pos_in_aln_w_gap+dist]
+                            print '# | #', this_hit[-1][pos_in_aln_w_gap-1-dist:pos_in_aln_w_gap-1], this_hit[-1][pos_in_aln_w_gap-1], this_hit[-1][pos_in_aln_w_gap:pos_in_aln_w_gap+dist]
+                            print '# S #', this_hit[-2][pos_in_aln_w_gap-1-dist:pos_in_aln_w_gap-1], this_hit[-2][pos_in_aln_w_gap-1], this_hit[-2][pos_in_aln_w_gap:pos_in_aln_w_gap+dist]
         else:                                # query has no hit
             print query, 'is not in the blast result or it has hit.'
     
