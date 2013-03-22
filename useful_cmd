@@ -53,4 +53,4 @@ sed 's/<[^<>]*>//g'
 
 # split one fasta seq file in to mulitple smaller files, each has certain number of seq.
 # e.g. each file has 10 seq:
-cat input.fa | awk 'BEGIN {n_seq=0; seqperfile=10} (/^>/){n_seq++; if(n_seq%seqperfile==1){file=sprintf("output_split_%d.fa",n_seq)}} { print >> file } '
+cat input.fa | awk 'BEGIN {n_seq=0; seqperfile=10} (/^>/){n_seq++; if(n_seq%seqperfile==1){file=sprintf("output_split_%d_to_%d.fa",n_seq, n_seq+seqperfile-1)}} { print >> file } '
