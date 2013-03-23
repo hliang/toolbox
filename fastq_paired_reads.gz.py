@@ -57,7 +57,7 @@ else:
     def r_name(title):
         return title.split()[0]
 
-print "Scaning reverse file to build list of names..."    
+print "Scanning reverse file to build list of names..."    
 reverse_ids = set()
 paired_ids = set()
 for title, seq, qual in FastqGeneralIterator(gzip.open(input_reverse_filename)):
