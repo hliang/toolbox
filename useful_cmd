@@ -58,3 +58,5 @@ cat input.fa | awk 'BEGIN {n_seq=0; seqperfile=10} (/^>/){n_seq++; if(n_seq%seqp
 # remote blast, search ncbi database
 blastx -query in.fasta -db nr -remote -outfmt 5 -evalue 1e-3 -max_target_seqs 25 -out out.blastx.xml
 
+# awk one-liner to extract a list of sequences from fasta file(s)
+awk '(NR==FNR){id[">"$1]++} /^>/{inlist=(($1 in id)?1:0)} inlist{print}' some_ids.list input_seq.fasta > output_some_seq.fasta
