@@ -60,3 +60,15 @@ blastx -query in.fasta -db nr -remote -outfmt 5 -evalue 1e-3 -max_target_seqs 25
 
 # awk one-liner to extract a list of sequences from fasta file(s)
 awk '(NR==FNR){id[">"$1]++} /^>/{inlist=(($1 in id)?1:0)} inlist{print}' some_ids.list input_seq.fasta > output_some_seq.fasta
+
+# wget – recursively download all files from certain directory listed by apache
+# Case: recursively download all the files that are in the ‘ddd’  folder for the url ‘http://hostname/aaa/bbb/ccc/ddd/&#8217;
+# Solution:
+wget -r -np -nH --cut-dirs=3 -R index.html http://hostname/aaa/bbb/ccc/ddd/
+# Explanation:
+# It will download all files and subfolders in ddd directory:
+# recursively (-r),
+# not going to upper directories, like ccc/… (-np, --no-parent),
+# not saving files to hostname folder (-nH, --no-host-directories),
+# but to ddd by omitting first 3 folders aaa, bbb, ccc (--cut-dirs=3),
+# excluding index.html files (-R index.html, --reject rejlist)
