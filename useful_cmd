@@ -28,6 +28,10 @@ tar zcvf - /wwwdata | ssh root@dumpserver.nixcraft.in "cat > /backup/wwwdata.tar
 tar zcvf - /wwwdata | ssh root@192.168.1.201 "cat > /backup/wwwdata.tar.gz"
 # OR
 tar czf - /path/files-to-copy | ssh user@remotehost "cat > /path/data.tgz" 
+# whole folder
+tar zcvf - SOURCEDIR | ssh user@remotehost "(cd DESTDIR; tar zxvf -)"
+# tar files in a list
+tar cvf - -T files.list | ssh user@remotehost 'cd /dest/dir ; tar xvf -'
 
 
 # You can restore tar backup over ssh session:
