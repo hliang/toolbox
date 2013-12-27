@@ -50,6 +50,12 @@ awk '{ if (lines > 0) { print; --lines; } } /PATTERN/ { lines = 5 }' inputfile
 # Count bases in a fasta file
 grep -v '>' file.fasta | wc -m
 
+# Converting FASTQ to FASTA with SED
+# !!! assuming that each read entry occupies exactly 4 lines in the FASTQ file !!!
+sed -n '1~4s/^@/>/p; 2~4p' 
+# -n means only explicitly printed lines are included in output.
+# 1~4 means select every 4th line, beginning at line 1. 
+
 # strip html/xml tags
 sed 's/<[^>]\+>//g'
 # or 
@@ -58,6 +64,9 @@ sed 's/<[^<>]*>//g'
 # split one fasta seq file in to mulitple smaller files, each has certain number of seq.
 # e.g. each file has 10 seq:
 cat input.fa | awk 'BEGIN {n_seq=0; seqperfile=10} (/^>/){n_seq++; if(n_seq%seqperfile==1){file=sprintf("output_split_%d_to_%d.fa",n_seq, n_seq+seqperfile-1)}} { print >> file } '
+
+# install python packages (withou root permission) in specified folder
+easy_install-python2.7 --prefix '/homes/hliang/local' scipy
 
 # remote blast, search ncbi database
 blastx -query in.fasta -db nr -remote -outfmt 5 -evalue 1e-3 -max_target_seqs 25 -out out.blastx.xml
