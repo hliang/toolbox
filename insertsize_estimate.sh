@@ -2,10 +2,10 @@
 set -o verbose
 
 # read files
-read1="${HOME}/projects/ps/raw/PS001_S1_L001_R1_001.fastq.gz"
-read2="${HOME}/projects/ps/raw/PS001_S1_L001_R2_001.fastq.gz"
+read1="/path/to/original_read_R1.fastq.gz"
+read2="/path/to/original_read_R2.fastq.gz"
 # ref seq file
-ref="${HOME}/projects/ps/B728a.fasta"
+ref="/path/to/reference_sequence.fasta"
 
 # make link files poiting to original files
 ln -s $read1 ./raw.r1.fq
