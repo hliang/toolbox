@@ -56,6 +56,31 @@ sed -n '1~4s/^@/>/p; 2~4p'
 # -n means only explicitly printed lines are included in output.
 # 1~4 means select every 4th line, beginning at line 1. 
 
+
+# get the unmapped reads from a bam file:
+samtools view -f 4 file.bam > unmapped.sam
+
+# get only the mapped reads. option '-F' works like -v of grep and skips the alignments for a specific flag.
+samtools view -b -F 4 file.bam > mapped.bam
+
+# extract only the first read from paired end bam files
+samtools view -h -f 0x0040 test.bam > test_first_pair.sam
+# extract only the second read from paired end bam files
+samtools view -h -f 0x0080 test.bam > test_second_pair.sam
+
+Flag	Chr	Description
+0x0001	p	the read is paired in sequencing
+0x0002	P	the read is mapped in a proper pair
+0x0004	u	the query sequence itself is unmapped
+0x0008	U	the mate is unmapped
+0x0010	r	strand of the query (1 for reverse)
+0x0020	R	strand of the mate
+0x0040	1	the read is the first read in a pair
+0x0080	2	the read is the second read in a pair
+0x0100	s	the alignment is not primary
+0x0200	f	the read fails platform/vendor quality checks
+0x0400	d	the read is either a PCR or an optical duplicate
+
 # strip html/xml tags
 sed 's/<[^>]\+>//g'
 # or 
